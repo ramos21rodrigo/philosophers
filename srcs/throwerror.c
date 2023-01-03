@@ -1,12 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   throwerror.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: roramos <roramos@student.42.fr>            +#+  +:+       +#+        */
+/*   By: roramos <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/12/30 15:35:12 by roramos           #+#    #+#             */
-/*   Updated: 2022/12/30 15:35:21 by roramos          ###   ########.fr       */
+/*   Created: 2023/01/03 14:13:43 by roramos           #+#    #+#             */
+/*   Updated: 2023/01/03 14:18:23 by roramos          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "../includes/philo.h"
+
+void	throwerror(char *error)
+{
+	printf("Error: %s\n", error);
+	exit(EXIT_FAILURE);
+}
