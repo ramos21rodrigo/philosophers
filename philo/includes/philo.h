@@ -6,7 +6,7 @@
 /*   By: roramos <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/03 14:12:19 by roramos           #+#    #+#             */
-/*   Updated: 2023/01/05 16:38:13 by roramos          ###   ########.fr       */
+/*   Updated: 2023/01/05 18:56:35 by roramos          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ typedef	struct s_props
 	int				sleep_time;
 	int				must_eat_times;
 	bool 			dead_philo;
-	struct timeval	starting_time;
+	suseconds_t		starting_time;
 }				t_props;
 
 typedef struct s_philo
@@ -50,10 +50,13 @@ typedef enum e_philo_state{
 	SLEEP
 }	t_philo_state;
 
-//Throw error on call
+/* Throw error on call */
 void	throwerror(char *error);
 
-// Verify arguments
+/* Get current time */
+suseconds_t	get_time();
+
+/* Verify arguments */
 t_props	check_and_parse_arguments(int argc, char const *argv[]);
 
 # endif

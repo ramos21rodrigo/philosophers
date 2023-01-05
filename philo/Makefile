@@ -6,13 +6,14 @@
 #    By: roramos <marvin@42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/01/03 15:04:30 by roramos           #+#    #+#              #
-#    Updated: 2023/01/05 17:00:02 by roramos          ###   ########.fr        #
+#    Updated: 2023/01/05 17:44:57 by roramos          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = philo
-SRCS = srcs/philo.c\
-		srcs/args.c\
+SRCS =	srcs/args.c\
+		srcs/get_time.c\
+		srcs/philo.c\
 		srcs/throwerror.c
 OBJS = ${SRCS:.c=.o}
 CFLAGS = -Wall -Wextra -Werror
