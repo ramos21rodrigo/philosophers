@@ -17,11 +17,24 @@ void	*lifeline(void	*philos)
 	t_philo *philo;
 
 	philo = (t_philo *)philos;
-	pthread_mutex_lock(&(philo->left_fork));
+	while (!philo->props->dead_philo)
+	{
+		printf("%u is thinking\n", philo->id + 1);
+		pthread_mutex_lock(philo->left_fork);
+		pthread_mutex_lock(philo->right_fork);
+		printf("%u has taken a fork\n", philo->id + 1);
+		printf("%u has taken a fork\n", philo->id + 1);
 
-	printf("%u\n", philo->id + 1);
+		printf("%u is eating\n", philo->id + 1);
+		sleep(philo->props->eat_time);
+
+		pthread_mutex_unlock(philo->left_fork);
+		pthread_mutex_unlock(philo->right_fork);
+
+		printf("%u is sleeping\n\n", philo->id + 1);
+		sleep(philo->props->sleep_time);
+	}
 	
-	pthread_mutex_unlock(&(philo->left_fork));
 	return (NULL);
 }
 
@@ -37,20 +50,23 @@ void	start_philos_threads(t_props props)
 	while(i < props.philos_amount)
 	{
 		philos[i].id = i;
-		pthread_mutex_init(&(philos[i].right_fork), NULL);
-		philos[(i + 1) % props.philos_amount].left_fork = philos[i].right_fork;
+		pthread_mutex_init(&philos[i].mutex, NULL);
+		philos[i].right_fork = &(philos[i].mutex);
+		philos[(i + 1) % props.philos_amount].left_fork = &(philos[i].mutex);
+		philos[i].props = &props;
 		i++;
 	}
 	i = 0;
-	while(i < props.philos_amount)
+	while (i < props.philos_amount)
 	{
-		pthread_create(&(philos[i].thread_id), NULL, &lifeline, &philos[i]);
+		pthread_create(&(philos[i].thread_id), NULL, &lifeline, &(philos[i]));
 		i++;
 	}
 	i = 0;
-	while(i < props.philos_amount)
+	while (i < props.philos_amount)
 	{
-		pthread_detach(philos[i++].thread_id);
+		pthread_join(philos[i].thread_id, NULL);
+		i++;
 	}
 }
 

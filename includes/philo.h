@@ -18,6 +18,7 @@
 # include <limits.h>
 # include <pthread.h>
 # include <unistd.h>
+# include <stdbool.h>
 
 typedef	struct s_props
 {
@@ -26,14 +27,17 @@ typedef	struct s_props
 	unsigned int	eat_time;
 	unsigned int	sleep_time;
 	int				must_eat_times;
+	bool 			dead_philo;
 }				t_props;
 
 typedef struct s_philo
 {
 	unsigned int	id;
 	pthread_t		thread_id;
-	pthread_mutex_t	left_fork;
-	pthread_mutex_t	right_fork;
+	pthread_mutex_t	mutex;
+	pthread_mutex_t *left_fork;
+	pthread_mutex_t	*right_fork;
+	t_props 		*props;
 }				t_philo;
 
 

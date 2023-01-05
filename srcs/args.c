@@ -59,5 +59,6 @@ t_props	check_and_parse_arguments(int argc, char const *argv[])
 		props.idle_time = check_int(argv[5]);
 	else
 		props.idle_time = -1;
+	props.dead_philo = false;
 	return (props);
 }
