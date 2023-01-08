@@ -6,7 +6,7 @@
 /*   By: roramos <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/03 14:11:34 by roramos           #+#    #+#             */
-/*   Updated: 2023/01/03 16:32:29 by roramos          ###   ########.fr       */
+/*   Updated: 2023/01/08 18:32:53 by roramos          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,13 +52,13 @@ t_props	check_and_parse_arguments(int argc, char const *argv[])
 	if (argc != 5 &&	 argc != 6)
 		throwerror("Invalid number of arguments!");
 	props.philos_amount = check_int(argv[1]);
-	props.idle_time = check_int(argv[2]);
+	props.starve_time = check_int(argv[2]);
 	props.eat_time = check_int(argv[3]);
 	props.sleep_time = check_int(argv[4]);
 	if (argc == 6)
-		props.idle_time = check_int(argv[5]);
+		props.must_eat_times = check_int(argv[5]);
 	else
-		props.idle_time = -1;
+		props.must_eat_times = -1;
 	props.dead_philo = false;
 	return (props);
 }
