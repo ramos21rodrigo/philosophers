@@ -6,121 +6,98 @@
 /*   By: roramos <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/03 14:08:40 by roramos           #+#    #+#             */
-/*   Updated: 2023/01/08 19:25:10 by roramos          ###   ########.fr       */
+/*   Updated: 2023/01/10 19:01:00 by roramos          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
-
-void	display_state(t_philo *philo, t_philo_state state)
-{
-	time_t	timer;
-
-	timer = get_time() - philo->props->starting_time;
-	if (state == THINK)
-		printf("%02ld %d  is thinking\n", timer, philo->id);
-	else if (state == FORK)
-		printf("%02ld %d  has taken a fork\n", timer, philo->id);
-	else if (state == EAT)
-		printf("%02ld %d  is eating\n", timer, philo->id);
-	else if (state == SLEEP)
-		printf("%02ld %d  is sleeping\n", timer, philo->id);
-	else if (state == DEAD)
-		printf("%02ld %d is dead\n", timer, philo->id);
-
-}
-
-void	*hungerspan(void *philo_arg)
-{
-	t_philo *philo;
-
-	philo = (t_philo *)philo_arg;
-	sleep(philo->props->starve_time);
-	if (philo->last_meal > get_time() - philo->props->starve_time)
-	{
-		display_state(philo, DEAD);
-		philo->props->dead_philo = true;
-		pthread_mutex_unlock(philo->left_fork);
-		pthread_mutex_unlock(philo->right_fork);
-	}
-	return (NULL);
-}
 
 void	*lifespan(void	*philos)
 {
 	t_philo *philo;
 
 	philo = (t_philo *)philos;
-	while (!philo->props->dead_philo)
+	while (!philo->props->dead_philo && philo->amount_of_meals != 0)
 	{
-		pthread_create(&(philo->hunger_thread_id), NULL, &hungerspan, philo);
-		pthread_detach(philo->hunger_thread_id);
 		pthread_mutex_lock(philo->left_fork);
 		pthread_mutex_lock(philo->right_fork);
 		display_state(philo, FORK);
-		display_state(philo, FORK);
-
+		
+		philo->is_unkillable = true;
+		philo->amount_of_meals --;
+		philo->time_of_last_meal = get_time();
 		display_state(philo, EAT);
-		philo->last_meal = get_time();
-		sleep(philo->props->eat_time);
-
+		usleep(philo->props->eat_time * 1000);
 		pthread_mutex_unlock(philo->left_fork);
 		pthread_mutex_unlock(philo->right_fork);
 
 		display_state(philo, SLEEP);
-		sleep(philo->props->sleep_time);
+		usleep(philo->props->sleep_time * 1000);
 		display_state(philo, THINK);
+		philo->is_unkillable = false;
 	}
 	return (NULL);
 }
 
-t_philo *init_philos(t_props props)
+void	*monitoring(void *args)
 {
-	int			i;
-	t_philo		*philos;
-	
-	philos = malloc(props.philos_amount * sizeof(t_philo));
-	if (!philos)
-		throwerror("Allocating");
-	i = -1;
-	while (++i < props.philos_amount)
+	t_philo *philos;
+	int		i;	
+	int		finish_eating;
+
+	philos = (t_philo *)args;
+	while(true)
 	{
-		pthread_mutex_init(&philos[i].mutex, NULL);
-		philos[i].last_meal = get_time();
-		philos[i].id = i + 1;
-		philos[i].right_fork = &(philos[i].mutex);
-		philos[(i + 1) % props.philos_amount].left_fork = &(philos[i].mutex);
-		philos[i].props = &props;
+		i = -1;
+		finish_eating = 0;
+		while(++i < philos->props->philos_amount)
+		{
+			if ((get_time() - philos[i].time_of_last_meal) >= philos[i].props->starve_time && !philos[i].is_unkillable)
+			{
+				display_state(&(philos[i]), DEAD);
+				pthread_mutex_unlock(&philos[i].print_mutex);
+				return(NULL);
+			}
+			if (philos[i].amount_of_meals == 0)
+				finish_eating ++;
+			usleep(1 * 1000);
+		}
+		if (finish_eating == philos->props->philos_amount)
+		{
+			printf("Everyone is alive! :(\n");
+			break;
+		}
 	}
-	return (philos);
+	return(NULL);
 }
 
-void	start_philos_threads(t_props props)
+void	start_philos_threads(t_philo *philos, t_props props)
 {
 	int			i;
-	t_philo		*philos;
+	pthread_t	monitoring_id;
 
-	philos = init_philos(props);
 	i = -1;
 	while (++i < props.philos_amount)
 	{
 		philos[i].props->starting_time = get_time();
 		pthread_create(&(philos[i].thread_id), NULL, &lifespan, &(philos[i]));
+		pthread_detach(philos[i].thread_id);
 	}
+	pthread_create(&monitoring_id, NULL, &monitoring, philos);
+	pthread_join(monitoring_id, NULL);
 	i = -1;
 	while (++i < props.philos_amount)
-	{
-		pthread_join(philos[i].thread_id, NULL);
 		pthread_mutex_destroy(&philos[i].mutex);
-	}
+	free(philos);
 }
 
 int main(int argc, char const *argv[])
 {
-	t_props	props;	
+	t_props		props;
+	t_philo		*philos;
 
 	props = check_and_parse_arguments(argc, argv);
-	start_philos_threads(props);
-	pthread_exit(0);
+	philos = init_philos(props);
+	start_philos_threads(philos, props);
 	return (EXIT_SUCCESS);
 }

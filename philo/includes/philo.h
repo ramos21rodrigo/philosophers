@@ -6,7 +6,7 @@
 /*   By: roramos <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/03 14:12:19 by roramos           #+#    #+#             */
-/*   Updated: 2023/01/08 19:15:32 by roramos          ###   ########.fr       */
+/*   Updated: 2023/01/10 19:06:04 by roramos          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,11 +36,13 @@ typedef struct s_philo
 {
 	int				id;
 	pthread_t		thread_id;
-	pthread_t		hunger_thread_id;
+	pthread_mutex_t	print_mutex;
 	pthread_mutex_t	mutex;
 	pthread_mutex_t *left_fork;
 	pthread_mutex_t	*right_fork;
-	time_t			last_meal;
+	time_t			time_of_last_meal;
+	int				amount_of_meals;
+	bool			is_unkillable;
 	t_props 		*props;
 }				t_philo;
 
@@ -60,5 +62,11 @@ time_t	get_time();
 
 /* Verify arguments */
 t_props	check_and_parse_arguments(int argc, char const *argv[]);
+
+/* Init philosophers*/
+t_philo *init_philos(t_props props);
+
+/* Display philospher state*/
+void	display_state(t_philo *philo, t_philo_state state);
 
 # endif

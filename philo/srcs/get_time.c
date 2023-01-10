@@ -6,7 +6,7 @@
 /*   By: roramos <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/05 17:41:54 by roramos           #+#    #+#             */
-/*   Updated: 2023/01/08 19:12:38 by roramos          ###   ########.fr       */
+/*   Updated: 2023/01/10 18:35:33 by roramos          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 time_t	get_time()
 {
-	struct timeval	current_time;
+	struct timeval	tv;
 
-	gettimeofday(&current_time, NULL);
-	return(current_time.tv_sec / 1000);
+	gettimeofday(&tv, NULL);
+	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
 }
