@@ -6,17 +6,17 @@
 /*   By: roramos <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/10 18:47:00 by roramos           #+#    #+#             */
-/*   Updated: 2023/01/10 18:47:17 by roramos          ###   ########.fr       */
+/*   Updated: 2023/01/11 15:27:41 by roramos          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
 
-t_philo *init_philos(t_props props)
+t_philo	*init_philos(t_props props)
 {
 	int			i;
 	t_philo		*philos;
-	
+
 	philos = malloc(props.philos_amount * sizeof(t_philo));
 	if (!philos)
 		throwerror("Allocating");
