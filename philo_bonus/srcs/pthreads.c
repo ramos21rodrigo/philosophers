@@ -6,72 +6,66 @@
 /*   By: roramos <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 15:02:41 by roramos           #+#    #+#             */
-/*   Updated: 2023/01/12 16:50:48 by roramos          ###   ########.fr       */
+/*   Updated: 2023/01/12 18:25:16 by roramos          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
 
-void	change_forks_mutex_state(t_philo *philo, bool lock)
+void	change_semaphore_state(sem_t forks_sem, bool increment)
 {
-	if (lock)
+	if (increment)
 	{
-		pthread_mutex_lock(philo->left_fork);
-		pthread_mutex_lock(philo->right_fork);
+		sem_wait(&forks_sem);
+		sem_wait(&forks_sem);
 		return ;
 	}
-	pthread_mutex_unlock(philo->left_fork);
-	pthread_mutex_unlock(philo->right_fork);
+	sem_post(&forks_sem);
+	sem_post(&forks_sem);
 }
 
-void	*monitoring(void *args)
+void	*monitoring(t_philo *philos, t_props *props)
 {
-	t_philo	*philos;
 	int		i;	
 	int		finish_eating;
 
 	finish_eating = 0;
-	philos = (t_philo *)args;
-	while (finish_eating != philos->props->philos_amount)
+	while (finish_eating != props->philos_amount)
 	{
 		i = -1;
 		finish_eating = 0;
-		while (++i < philos->props->philos_amount)
+		while (++i < props->philos_amount)
 		{
 			if ((get_time() - philos[i].time_of_last_meal)
-				>= philos[i].props->starve_time && !philos[i].is_unkillable)
+				>= props->starve_time && !philos[i].is_unkillable)
 			{
-				display_state(&(philos[i]), DEAD);
-				pthread_mutex_unlock(&philos[i].print_mutex);
-				return (NULL);
+				display_state(&(philos[i]), props, DEAD);
+				exit (EXIT_SUCCESS);
 			}
 			if (philos[i].amount_of_meals == 0)
 				finish_eating ++;
 		}
 	}
 	printf("Everyone is alive! :(\n");
-	return (NULL);
+	exit (EXIT_SUCCESS);
 }
 
-void	*lifespan(void	*philos)
+void	*lifespan(t_philo *philo, t_props *props, sem_t forks_sem)
 {
-	t_philo	*philo;
-
-	philo = (t_philo *)philos;
-	while (!philo->props->dead_philo && philo->amount_of_meals != 0)
+	while (!props->dead_philo && philo->amount_of_meals != 0)
 	{
-		change_forks_mutex_state(philo, true);
-		display_state(philo, FORK);
-		display_state(philo, FORK);
+		change_semaphore_state(forks_sem, true);
+		display_state(philo, props, FORK);
+		display_state(philo, props, FORK);
 		philo->is_unkillable = true;
 		philo->amount_of_meals --;
 		philo->time_of_last_meal = get_time();
-		display_state(philo, EAT);
-		msleep(philo->props->eat_time);
-		change_forks_mutex_state(philo, false);
-		display_state(philo, SLEEP);
-		msleep(philo->props->sleep_time);
-		display_state(philo, THINK);
+		display_state(philo, props, EAT);
+		msleep(props->eat_time);
+		change_semaphore_state(forks_sem, false);
+		display_state(philo, props, SLEEP);
+		msleep(props->sleep_time);
+		display_state(philo, props, THINK);
 		philo->is_unkillable = false;
 	}
 	return (NULL);
