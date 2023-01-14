@@ -6,7 +6,7 @@
 /*   By: roramos <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/03 14:12:19 by roramos           #+#    #+#             */
-/*   Updated: 2023/01/12 18:25:25 by roramos          ###   ########.fr       */
+/*   Updated: 2023/01/14 18:34:49 by roramos          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,13 @@
 # include <sys/time.h>
 # include <semaphore.h>
 # include <sys/wait.h>
+# include <fcntl.h>
+# include <signal.h>
+# include <pthread.h>
 
 typedef struct s_props
 {
+	sem_t			*print_sem;
 	time_t			starting_time;
 	bool			dead_philo;
 	int				philos_amount;
@@ -35,8 +39,10 @@ typedef struct s_props
 
 typedef struct s_philo
 {
+	t_props			*props;
 	int				id;
 	time_t			time_of_last_meal;
+	int				pid;
 	int				amount_of_meals;
 	bool			is_unkillable;
 }				t_philo;
@@ -67,13 +73,13 @@ void	msleep(int time);
 /* Display philospher state*/
 void	display_state(t_philo *philo, t_props *props, t_philo_state state);
 
-/* Lock or unlock mutex */
-void	change_forks_mutex_state(t_philo *philo, bool lock);
+/* Lock or unlock semaphore */
+void	change_semaphore_state(sem_t *forks_sem, bool increment);
 
 /*  Monotoring any dead philo or 0 meals left*/
-void	*monitoring(t_philo *philos, t_props *props);
+void	*monitoring(void *arg);
 
 /* Philosopher life */
-void	*lifespan(t_philo *philo, t_props *props, sem_t forks_sem);
+void	lifespan(t_philo *philo, t_props *props, sem_t *forks_sem);
 
 #endif

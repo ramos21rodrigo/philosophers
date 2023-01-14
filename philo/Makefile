@@ -6,12 +6,13 @@
 #    By: roramos <marvin@42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/01/03 15:04:30 by roramos           #+#    #+#              #
-#    Updated: 2023/01/11 15:49:26 by roramos          ###   ########.fr        #
+#    Updated: 2023/01/14 15:10:32 by roramos          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = philo
-SRCS =	srcs/args.c\
+SRCS =	srcs/actions.c\
+		srcs/args.c\
 		srcs/display_status.c\
 		srcs/init_philos.c\
 		srcs/philo.c\

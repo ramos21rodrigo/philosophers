@@ -6,7 +6,7 @@
 /*   By: roramos <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/03 14:08:40 by roramos           #+#    #+#             */
-/*   Updated: 2023/01/12 18:24:44 by roramos          ###   ########.fr       */
+/*   Updated: 2023/01/14 18:37:12 by roramos          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,23 +15,23 @@
 void	start_philos_threads(t_philo *philos, t_props *props)
 {
 	int			i;
-	sem_t		forks_sem;
-	pid_t		monitoring_id;
-	int 		status;
+	int			status;
+	sem_t		*forks_sem;
 
 	i = -1;
-	sem_init(&forks_sem, 0, props->philos_amount);
+	forks_sem = sem_open("forks", O_CREAT, 00700 , props->philos_amount);
+	props->print_sem = sem_open("print", O_CREAT, 00700 , 1);
+	sem_unlink("forks");
+	sem_unlink("print");
 	props->starting_time = get_time();
 	while (++i < props->philos_amount)
 	{
 		if(fork() == 0)
 			lifespan(&(philos[i]), props, forks_sem);
 	}
-	monitoring_id = fork();
-	if(monitoring_id == 0)
-			monitoring(philos, props);
-	waitpid(monitoring_id, &status, WNOHANG);
-	sem_destroy(&forks_sem);
+	waitpid(-1, &status, 0);
+	sem_close(forks_sem);
+	sem_close(props->print_sem);
 	free(philos);
 }
 

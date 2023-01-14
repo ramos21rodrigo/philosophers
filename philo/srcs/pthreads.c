@@ -6,23 +6,11 @@
 /*   By: roramos <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 15:02:41 by roramos           #+#    #+#             */
-/*   Updated: 2023/01/12 16:50:48 by roramos          ###   ########.fr       */
+/*   Updated: 2023/01/14 15:34:36 by roramos          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
-
-void	change_forks_mutex_state(t_philo *philo, bool lock)
-{
-	if (lock)
-	{
-		pthread_mutex_lock(philo->left_fork);
-		pthread_mutex_lock(philo->right_fork);
-		return ;
-	}
-	pthread_mutex_unlock(philo->left_fork);
-	pthread_mutex_unlock(philo->right_fork);
-}
 
 void	*monitoring(void *args)
 {
@@ -60,19 +48,10 @@ void	*lifespan(void	*philos)
 	philo = (t_philo *)philos;
 	while (!philo->props->dead_philo && philo->amount_of_meals != 0)
 	{
-		change_forks_mutex_state(philo, true);
-		display_state(philo, FORK);
-		display_state(philo, FORK);
-		philo->is_unkillable = true;
-		philo->amount_of_meals --;
-		philo->time_of_last_meal = get_time();
-		display_state(philo, EAT);
-		msleep(philo->props->eat_time);
-		change_forks_mutex_state(philo, false);
-		display_state(philo, SLEEP);
-		msleep(philo->props->sleep_time);
-		display_state(philo, THINK);
-		philo->is_unkillable = false;
+		pick_up_fork(philo);
+		eat(philo);
+		put_fork_down(philo);
+		sleep_and_think(philo);
 	}
 	return (NULL);
 }

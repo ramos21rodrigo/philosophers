@@ -6,7 +6,7 @@
 /*   By: roramos <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/03 14:12:19 by roramos           #+#    #+#             */
-/*   Updated: 2023/01/11 15:50:45 by roramos          ###   ########.fr       */
+/*   Updated: 2023/01/14 15:26:52 by roramos          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,27 +23,27 @@
 
 typedef struct s_props
 {
+	time_t			starting_time;
 	bool			dead_philo;
 	int				philos_amount;
 	int				must_eat_times;
 	int				starve_time;
 	int				eat_time;
 	int				sleep_time;
-	time_t			starting_time;
 }				t_props;
 
 typedef struct s_philo
 {
-	int				id;
+	t_props			*props;
 	pthread_t		thread_id;
 	pthread_mutex_t	print_mutex;
 	pthread_mutex_t	mutex;
 	pthread_mutex_t	*left_fork;
 	pthread_mutex_t	*right_fork;
 	time_t			time_of_last_meal;
+	int				id;
 	int				amount_of_meals;
 	bool			is_unkillable;
-	t_props			*props;
 }				t_philo;
 
 typedef enum e_philo_state{
@@ -80,5 +80,11 @@ void	*monitoring(void *args);
 
 /* Philosopher life */
 void	*lifespan(void	*philos);
+
+/* Philosophers actions */
+void	eat(t_philo	*philo);
+void	sleep_and_think(t_philo	*philo);
+void	pick_up_fork(t_philo *philo);
+void	put_fork_down(t_philo *philo);
 
 #endif

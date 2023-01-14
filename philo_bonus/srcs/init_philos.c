@@ -6,7 +6,7 @@
 /*   By: roramos <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/10 18:47:00 by roramos           #+#    #+#             */
-/*   Updated: 2023/01/12 18:20:32 by roramos          ###   ########.fr       */
+/*   Updated: 2023/01/14 17:19:01 by roramos          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ t_philo	*init_philos(t_props props)
 		philos[i].time_of_last_meal = get_time();
 		philos[i].is_unkillable = false;
 		philos[i].id = i + 1;
+		philos[i].props = &props;
 	}
 	return (philos);
 }

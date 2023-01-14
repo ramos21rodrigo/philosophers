@@ -6,7 +6,7 @@
 #    By: roramos <marvin@42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/01/03 15:04:30 by roramos           #+#    #+#              #
-#    Updated: 2023/01/12 16:41:49 by roramos          ###   ########.fr        #
+#    Updated: 2023/01/14 14:33:32 by roramos          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,7 @@ SRCS =	srcs/args.c\
 		srcs/display_status.c\
 		srcs/init_philos.c\
 		srcs/philo.c\
-		srcs/pthreads.c\
+		srcs/processes.c\
 		srcs/throwerror.c\
 		srcs/time.c
 OBJS = ${SRCS:.c=.o}
