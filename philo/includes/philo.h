@@ -6,7 +6,7 @@
 /*   By: roramos <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/03 14:12:19 by roramos           #+#    #+#             */
-/*   Updated: 2023/01/16 16:35:32 by roramos          ###   ########.fr       */
+/*   Updated: 2023/01/16 16:46:29 by roramos          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,7 @@ typedef enum e_philo_state{
 
 /* Throw error on call */
 void	throwerror(char *error);
+void	throwerror_and_free(char *error, t_philo *philos);
 
 /* Get current time */
 time_t	get_time(void);
@@ -80,6 +81,9 @@ void	*monitoring(void *args);
 
 /* Philosopher life */
 void	*lifespan(void	*philos);
+
+/* Free philos and mutexes */
+void	free_philos(t_philo *philos);
 
 /* Philosophers actions */
 void	eat(t_philo	*philo);
