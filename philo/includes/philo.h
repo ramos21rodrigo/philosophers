@@ -6,7 +6,7 @@
 /*   By: roramos <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/03 14:12:19 by roramos           #+#    #+#             */
-/*   Updated: 2023/01/14 15:26:52 by roramos          ###   ########.fr       */
+/*   Updated: 2023/01/16 16:35:32 by roramos          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,5 +86,11 @@ void	eat(t_philo	*philo);
 void	sleep_and_think(t_philo	*philo);
 void	pick_up_fork(t_philo *philo);
 void	put_fork_down(t_philo *philo);
+
+static inline bool	is_starving(t_philo	philo)
+{
+	return (get_time() - philo.time_of_last_meal
+		>= philo.props->starve_time);
+}
 
 #endif

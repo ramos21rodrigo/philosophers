@@ -6,7 +6,7 @@
 /*   By: roramos <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/03 14:08:40 by roramos           #+#    #+#             */
-/*   Updated: 2023/01/14 18:42:09 by roramos          ###   ########.fr       */
+/*   Updated: 2023/01/16 16:29:35 by roramos          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,19 @@ void	free_philos(t_philo *philos, int philos_amount)
 	free(philos);
 }
 
+void	start_monitoring_thread(t_philo *philos)
+{
+	pthread_t	monitoring_id;
+
+	if (pthread_create(&monitoring_id, NULL, &monitoring, philos))
+		throwerror("Pthread create!");
+	if (pthread_join(monitoring_id, NULL) != 0)
+		throwerror("Pthread join!");
+}
+
 void	start_philos_threads(t_philo *philos, t_props props)
 {
 	int			i;
-	pthread_t	monitoring_id;
 
 	i = -1;
 	philos->props->starting_time = get_time();
@@ -34,13 +43,14 @@ void	start_philos_threads(t_philo *philos, t_props props)
 		if (pthread_create(&(philos[i].thread_id),
 				NULL, &lifespan, &(philos[i])) != 0)
 			throwerror("Pthread create!");
-		if (pthread_detach(philos[i].thread_id) != 0)
-			throwerror("Pthread deatch!");
 	}
-	if (pthread_create(&monitoring_id, NULL, &monitoring, philos))
-		throwerror("Pthread create!");
-	if (pthread_join(monitoring_id, NULL) != 0)
-		throwerror("Pthread join!");
+	start_monitoring_thread(philos);
+	i = -1;
+	while (++i < props.philos_amount)
+	{
+		if (pthread_join(philos[i].thread_id, NULL) != 0)
+			throwerror("Pthread create!");
+	}
 }
 
 int	main(int argc, char const *argv[])

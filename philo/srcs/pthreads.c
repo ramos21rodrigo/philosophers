@@ -6,7 +6,7 @@
 /*   By: roramos <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 15:02:41 by roramos           #+#    #+#             */
-/*   Updated: 2023/01/14 15:34:36 by roramos          ###   ########.fr       */
+/*   Updated: 2023/01/16 16:34:37 by roramos          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,10 @@ void	*monitoring(void *args)
 		finish_eating = 0;
 		while (++i < philos->props->philos_amount)
 		{
-			if ((get_time() - philos[i].time_of_last_meal)
-				>= philos[i].props->starve_time && !philos[i].is_unkillable)
+			if (is_starving(philos[i]) && !philos[i].is_unkillable)
 			{
 				display_state(&(philos[i]), DEAD);
+				philos->props->dead_philo = true;
 				pthread_mutex_unlock(&philos[i].print_mutex);
 				return (NULL);
 			}
