@@ -6,7 +6,7 @@
 /*   By: roramos <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/03 14:12:19 by roramos           #+#    #+#             */
-/*   Updated: 2023/01/14 18:34:49 by roramos          ###   ########.fr       */
+/*   Updated: 2023/01/16 18:44:22 by roramos          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,11 +25,13 @@
 # include <signal.h>
 # include <pthread.h>
 
+# define PHILO_DIED 1
+# define PHILO_ATE 0
+
 typedef struct s_props
 {
 	sem_t			*print_sem;
 	time_t			starting_time;
-	bool			dead_philo;
 	int				philos_amount;
 	int				must_eat_times;
 	int				starve_time;
@@ -81,5 +83,12 @@ void	*monitoring(void *arg);
 
 /* Philosopher life */
 void	lifespan(t_philo *philo, t_props *props, sem_t *forks_sem);
+
+static inline bool	is_starving(t_philo	*philo)
+{
+	return (get_time() - philo->time_of_last_meal
+		>= philo->props->starve_time);
+}
+
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: roramos <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/03 14:11:34 by roramos           #+#    #+#             */
-/*   Updated: 2023/01/11 15:30:02 by roramos          ###   ########.fr       */
+/*   Updated: 2023/01/16 18:45:17 by roramos          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,5 @@ t_props	check_and_parse_arguments(int argc, char const *argv[])
 		props.must_eat_times = check_int(argv[5]);
 	else
 		props.must_eat_times = -1;
-	props.dead_philo = false;
 	return (props);
 }
