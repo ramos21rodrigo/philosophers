@@ -6,7 +6,7 @@
 /*   By: roramos <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/10 18:47:00 by roramos           #+#    #+#             */
-/*   Updated: 2023/01/16 16:14:13 by roramos          ###   ########.fr       */
+/*   Updated: 2023/01/17 14:54:30 by roramos          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ t_philo	*init_philos(t_props props)
 	while (++i < props.philos_amount)
 	{
 		pthread_mutex_init(&philos[i].mutex, NULL);
+		pthread_mutex_init(&philos[i].can_die, NULL);
 		pthread_mutex_init(&philos[i].print_mutex, NULL);
 		philos[i].amount_of_meals = props.must_eat_times;
 		philos[i].time_of_last_meal = get_time();

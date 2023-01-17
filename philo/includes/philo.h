@@ -6,7 +6,7 @@
 /*   By: roramos <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/03 14:12:19 by roramos           #+#    #+#             */
-/*   Updated: 2023/01/16 16:46:29 by roramos          ###   ########.fr       */
+/*   Updated: 2023/01/17 18:20:12 by roramos          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ typedef struct s_props
 	int				starve_time;
 	int				eat_time;
 	int				sleep_time;
+	int				finish_eating;
 }				t_props;
 
 typedef struct s_philo
@@ -38,6 +39,7 @@ typedef struct s_philo
 	pthread_t		thread_id;
 	pthread_mutex_t	print_mutex;
 	pthread_mutex_t	mutex;
+	pthread_mutex_t	can_die;
 	pthread_mutex_t	*left_fork;
 	pthread_mutex_t	*right_fork;
 	time_t			time_of_last_meal;
@@ -81,6 +83,7 @@ void	*monitoring(void *args);
 
 /* Philosopher life */
 void	*lifespan(void	*philos);
+void	*single_philo_lifespan(void	*arg);
 
 /* Free philos and mutexes */
 void	free_philos(t_philo *philos);

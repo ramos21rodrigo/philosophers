@@ -6,23 +6,11 @@
 /*   By: roramos <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 15:02:41 by roramos           #+#    #+#             */
-/*   Updated: 2023/01/16 19:05:55 by roramos          ###   ########.fr       */
+/*   Updated: 2023/01/17 19:13:26 by roramos          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
-
-void	change_semaphore_state(sem_t *forks_sem, bool increment)
-{
-	if (increment)
-	{
-		sem_wait(forks_sem);
-		sem_wait(forks_sem);
-		return ;
-	}
-	sem_post(forks_sem);
-	sem_post(forks_sem);
-}
 
 void	*monitoring(void *arg)
 {
@@ -33,15 +21,16 @@ void	*monitoring(void *arg)
 	{
 		if (is_starving(philo) && !philo->is_unkillable)
 		{
-			display_state(philo, philo->props, DEAD);
+			display_state(philo, DEAD);
 			sem_wait(philo->props->print_sem);
-			exit(PHILO_DIED);
+			sem_post(philo->props->dead_sem);
+			return (NULL);
 		}
 	}
 	return (NULL);
 }
 
-void	lifespan(t_philo *philo, t_props *props, sem_t *forks_sem)
+void	lifespan(t_philo *philo)
 {
 	pthread_t	monitoring_id;
 	
@@ -49,19 +38,24 @@ void	lifespan(t_philo *philo, t_props *props, sem_t *forks_sem)
 	pthread_detach(monitoring_id);
 	while (philo->amount_of_meals != 0)
 	{
-		change_semaphore_state(forks_sem, true);
-		display_state(philo, props, FORK);
-		display_state(philo, props, FORK);
-		philo->is_unkillable = true;
-		philo->amount_of_meals --;
-		philo->time_of_last_meal = get_time();
-		display_state(philo, props, EAT);
-		msleep(props->eat_time);
-		change_semaphore_state(forks_sem, false);
-		display_state(philo, props, SLEEP);
-		msleep(props->sleep_time);
-		display_state(philo, props, THINK);
-		philo->is_unkillable = false;
+		pick_up_fork(philo, philo->props->forks_sem);
+		eat(philo);
+		put_fork_down(philo->props->forks_sem);
+		sleep_and_think(philo);
 	}
 	exit(PHILO_ATE);
+}
+
+void	*dead_thread(void *arg)
+{
+	int		i;
+	t_philo	*philos;
+
+	philos = (t_philo *)arg;
+	i = -1; 
+	sem_wait(philos->props->dead_sem);
+	sem_wait(philos->props->dead_sem);
+	while (++i < philos->props->philos_amount)
+		kill(philos[i].id, SIGKILL);
+	return (NULL);
 }

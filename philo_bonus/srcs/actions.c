@@ -5,33 +5,32 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: roramos <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/01/14 15:08:26 by roramos           #+#    #+#             */
-/*   Updated: 2023/01/17 15:00:19 by roramos          ###   ########.fr       */
+/*   Created: 2023/01/17 14:04:06 by roramos           #+#    #+#             */
+/*   Updated: 2023/01/17 19:12:45 by roramos          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
 
-void	change_forks_mutex_state(t_philo *philo, bool lock)
+void	change_semaphore_state(sem_t *forks_sem, bool increment)
 {
-	if (lock)
+	if (increment)
 	{
-		pthread_mutex_lock(philo->left_fork);
-		pthread_mutex_lock(philo->right_fork);
+		sem_wait(forks_sem);
+		sem_wait(forks_sem);
 		return ;
 	}
-	pthread_mutex_unlock(philo->left_fork);
-	pthread_mutex_unlock(philo->right_fork);
+	sem_post(forks_sem);
+	sem_post(forks_sem);
 }
+
 
 void	eat(t_philo	*philo)
 {
 	philo->is_unkillable = true;
 	philo->amount_of_meals --;
-	pthread_mutex_unlock(&philo->can_die);
-	display_state(philo, EAT);
 	philo->time_of_last_meal = get_time();
-	pthread_mutex_unlock(&philo->can_die);
+	display_state(philo, EAT);
 	msleep(philo->props->eat_time);
 }
 
@@ -43,14 +42,14 @@ void	sleep_and_think(t_philo	*philo)
 	philo->is_unkillable = false;
 }
 
-void	pick_up_fork(t_philo	*philo)
+void	pick_up_fork(t_philo *philo, sem_t *forks_sem)
 {
-	change_forks_mutex_state(philo, true);
+	change_semaphore_state(forks_sem, true);
 	display_state(philo, FORK);
 	display_state(philo, FORK);
 }
 
-void	put_fork_down(t_philo	*philo)
+void	put_fork_down(sem_t *forks_sem)
 {
-	change_forks_mutex_state(philo, false);
+	change_semaphore_state(forks_sem, false);
 }
