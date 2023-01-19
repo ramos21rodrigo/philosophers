@@ -6,7 +6,7 @@
 /*   By: roramos <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/03 14:12:19 by roramos           #+#    #+#             */
-/*   Updated: 2023/01/17 18:20:12 by roramos          ###   ########.fr       */
+/*   Updated: 2023/01/19 17:00:16 by roramos          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,15 +56,12 @@ typedef enum e_philo_state{
 	SLEEP
 }	t_philo_state;
 
-/* Throw error on call */
-void	throwerror(char *error);
-void	throwerror_and_free(char *error, t_philo *philos);
-
 /* Get current time */
 time_t	get_time(void);
 
 /* Verify arguments */
-t_props	check_and_parse_arguments(int argc, char const *argv[]);
+t_props	check_and_parse_arguments(int argc, char const *argv[],
+			bool *should_exit);
 
 /* Init philosophers*/
 t_philo	*init_philos(t_props props);

@@ -6,7 +6,7 @@
 /*   By: roramos <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/03 14:11:34 by roramos           #+#    #+#             */
-/*   Updated: 2023/01/17 18:20:41 by roramos          ###   ########.fr       */
+/*   Updated: 2023/01/19 16:59:26 by roramos          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,34 +31,50 @@ long	ft_latoi(const char *str)
 	return (result * sign);
 }
 
-unsigned int	check_int(const char *arg)
+unsigned int	check_int(const char *arg, bool *should_exit)
 {
 	long	n_arg;
 
 	n_arg = ft_latoi(arg);
 	if (!n_arg && *arg != '0')
-		throwerror("All arguments must be numbers!");
+	{
+		printf("All arguments must be numbers!\n");
+		*should_exit = true;
+		return (1);
+	}
 	if (n_arg <= 0)
-		throwerror("All arguments must be positive!");
+	{
+		printf("All arguments must be positive!\n");
+		*should_exit = true;
+		return (1);
+	}
 	if ((n_arg <= INT_MIN) || (n_arg >= INT_MAX))
-		throwerror("All arguments must be ints!");
+	{
+		printf("All arguments must be ints!\n");
+		*should_exit = true;
+		return (1);
+	}
 	return ((unsigned int)n_arg);
 }
 
-t_props	check_and_parse_arguments(int argc, char const *argv[])
+t_props	check_and_parse_arguments(int argc, char const *argv[],
+	bool *should_exit)
 {
 	t_props	props;
 
 	if (argc != 5 && argc != 6)
-		throwerror("Invalid number of arguments!");
-	props.philos_amount = check_int(argv[1]);
-	props.starve_time = check_int(argv[2]);
-	props.eat_time = check_int(argv[3]);
-	props.sleep_time = check_int(argv[4]);
+	{
+		printf("Invalid number of arguments!\n");
+		*should_exit = true;
+	}
+	props.philos_amount = check_int(argv[1], should_exit);
+	props.starve_time = check_int(argv[2], should_exit);
+	props.eat_time = check_int(argv[3], should_exit);
+	props.sleep_time = check_int(argv[4], should_exit);
 	if (argc == 6 && argv[5][0] == '0' && argv[5][1] == '\0')
 		props.must_eat_times = 0;
 	else if (argc == 6)
-		props.must_eat_times = check_int(argv[5]);
+		props.must_eat_times = check_int(argv[5], should_exit);
 	else
 		props.must_eat_times = -1;
 	props.dead_philo = false;

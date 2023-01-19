@@ -6,7 +6,7 @@
 /*   By: roramos <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/10 18:47:00 by roramos           #+#    #+#             */
-/*   Updated: 2023/01/17 14:54:30 by roramos          ###   ########.fr       */
+/*   Updated: 2023/01/19 16:56:20 by roramos          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ t_philo	*init_philos(t_props props)
 
 	philos = malloc(props.philos_amount * sizeof(t_philo));
 	if (!philos)
-		throwerror("Allocating");
+		return (NULL);
 	i = -1;
 	while (++i < props.philos_amount)
 	{

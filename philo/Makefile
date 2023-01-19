@@ -6,7 +6,7 @@
 #    By: roramos <marvin@42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/01/03 15:04:30 by roramos           #+#    #+#              #
-#    Updated: 2023/01/14 15:10:32 by roramos          ###   ########.fr        #
+#    Updated: 2023/01/19 16:54:26 by roramos          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,6 @@ SRCS =	srcs/actions.c\
 		srcs/init_philos.c\
 		srcs/philo.c\
 		srcs/pthreads.c\
-		srcs/throwerror.c\
 		srcs/time.c
 OBJS = ${SRCS:.c=.o}
 CFLAGS = -Wall -Wextra -Werror
